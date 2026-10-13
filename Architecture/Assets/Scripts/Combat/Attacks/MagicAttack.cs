@@ -22,6 +22,10 @@ public class MagicAttack : MonoBehaviour
     private float _nextAttackTime;
     private CharacterAttackState _attackState;
     private Vector3 _pendingDirection;
+    public float CooldownDuration => cooldown;
+
+    public float CooldownRemaining =>
+    Mathf.Max(0f, _nextAttackTime - Time.time);
 
     private void Awake()
     {

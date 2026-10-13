@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(MeleeAttack))]
 public sealed class AttackAnimationDriver : MonoBehaviour
 {
     [SerializeField] private Animator animator;
@@ -15,11 +14,19 @@ public sealed class AttackAnimationDriver : MonoBehaviour
     {
         _meleeAttack = GetComponent<MeleeAttack>();
         _magicAttack = GetComponent<MagicAttack>();
+
+        if (animator == null
+            || (_meleeAttack == null && _magicAttack == null))
+        {
+            Debug.LogError("Назначь Animator и компонент атаки.", this);
+            enabled = false;
+        }
     }
 
     private void OnEnable()
     {
-        _meleeAttack.AttackStarted += PlayMelee;
+        if (_meleeAttack != null)
+            _meleeAttack.AttackStarted += PlayMelee;
 
         if (_magicAttack != null)
             _magicAttack.AttackStarted += PlayCast;
@@ -27,7 +34,8 @@ public sealed class AttackAnimationDriver : MonoBehaviour
 
     private void OnDisable()
     {
-        _meleeAttack.AttackStarted -= PlayMelee;
+        if (_meleeAttack != null)
+            _meleeAttack.AttackStarted -= PlayMelee;
 
         if (_magicAttack != null)
             _magicAttack.AttackStarted -= PlayCast;

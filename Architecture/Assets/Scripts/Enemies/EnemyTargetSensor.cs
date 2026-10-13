@@ -11,12 +11,11 @@ public class EnemyTargetSensor : MonoBehaviour
     private void Awake()
     {
         _ownHealth = GetComponent<CharacterHealth>();
+    }
 
-        if (targetHealth == null)
-        {
-            Debug.LogError("Назначь Target Health.", this);
-            enabled = false;
-        }
+    public void SetTarget(CharacterHealth target)
+    {
+        targetHealth = target;
     }
 
     public Transform VisibleTarget
@@ -24,6 +23,7 @@ public class EnemyTargetSensor : MonoBehaviour
         get
         {
             if (!isActiveAndEnabled
+                || targetHealth == null
                 || _ownHealth.IsDead
                 || targetHealth.IsDead)
             {

@@ -9,7 +9,15 @@ public class FaceCamera : MonoBehaviour
     {
         if (cameraTransform == null)
         {
-            Debug.LogError("Назначь Camera Transform.", this);
+            Camera mainCamera = Camera.main;
+
+            if (mainCamera != null)
+                cameraTransform = mainCamera.transform;
+        }
+
+        if (cameraTransform == null)
+        {
+            Debug.LogError("Не найдена основная камера.", this);
             enabled = false;
         }
     }
