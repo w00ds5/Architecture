@@ -33,4 +33,22 @@ public sealed class HealthModel
         if (IsDead)
             Died?.Invoke();
     }
+
+    public void RestoreState(int currentHealth)
+    {
+        int restoredHealth = Math.Max(
+            0,
+            Math.Min(currentHealth, MaxHealth));
+
+        if (CurrentHealth == restoredHealth)
+            return;
+
+        bool wasDead = IsDead;
+
+        CurrentHealth = restoredHealth;
+        Changed?.Invoke(CurrentHealth, MaxHealth);
+
+        if (!wasDead && IsDead)
+            Died?.Invoke();
+    }
 }

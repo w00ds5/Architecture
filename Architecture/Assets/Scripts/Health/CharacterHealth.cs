@@ -43,4 +43,10 @@ public class CharacterHealth : MonoBehaviour
 
         return _model;
     }
+
+    public void RestoreState(int currentHealth)
+    {
+        GetModel().RestoreState(currentHealth);
+    }
+    
 }

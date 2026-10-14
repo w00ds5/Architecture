@@ -22,6 +22,9 @@ public class MeleeAttack : MonoBehaviour
     private float _nextAttackTime;
     private CharacterAttackState _attackState;
 
+    public float CooldownRemaining =>
+        Mathf.Max(0f, _nextAttackTime - Time.time);
+
     private void Awake()
     {
         _attackState = GetComponent<CharacterAttackState>();
@@ -92,4 +95,10 @@ public class MeleeAttack : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(attackPoint.position, radius);
     }
+
+    public void RestoreCooldown(float remaining)
+    {
+        _nextAttackTime = Time.time + Mathf.Max(0f, remaining);
+    }
+    
 }

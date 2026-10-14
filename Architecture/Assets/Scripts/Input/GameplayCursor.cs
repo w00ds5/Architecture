@@ -8,14 +8,6 @@ public class GameplayCursor : MonoBehaviour
         if (!Application.isFocused)
             return;
 
-        Keyboard keyboard = Keyboard.current;
-
-        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
-        {
-            SetCaptured(false);
-            return;
-        }
-
         Mouse mouse = Mouse.current;
 
         if (Cursor.lockState != CursorLockMode.Locked

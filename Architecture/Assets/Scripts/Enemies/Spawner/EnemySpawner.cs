@@ -5,9 +5,6 @@ public sealed class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private RandomSpawnArea spawnArea;
     [SerializeField] private CharacterHealth playerHealth;
-    [SerializeField] private EnemyTargetSensor meleePrefab;
-    [SerializeField] private EnemyTargetSensor rangedPrefab;
-    [SerializeField] private Transform enemyParent;
 
     [SerializeField, Range(2, 3)] private int minCount = 2;
     [SerializeField, Range(2, 3)] private int maxCount = 3;
@@ -16,25 +13,30 @@ public sealed class EnemySpawner : MonoBehaviour
 
     private readonly List<Vector3> _occupiedPositions = new();
 
-    private void Start()
+    public void SpawnRandom(IEnemyFactory factory)
     {
-        if (spawnArea == null
-            || playerHealth == null
-            || meleePrefab == null
-            || rangedPrefab == null)
+        if (factory == null)
+            throw new System.ArgumentNullException(nameof(factory));
+
+        if (spawnArea == null || playerHealth == null)
         {
-            Debug.LogError("Назначь область, игрока и оба префаба.", this);
-            enabled = false;
+            Debug.LogError(
+                "Назначь область появления и здоровье игрока.",
+                this);
+
             return;
         }
 
+        _occupiedPositions.Clear();
         Physics.SyncTransforms();
 
-        SpawnType(meleePrefab);
-        SpawnType(rangedPrefab);
+        SpawnType(EnemyKind.Melee, factory);
+        SpawnType(EnemyKind.Ranged, factory);
     }
 
-    private void SpawnType(EnemyTargetSensor prefab)
+    private void SpawnType(
+        EnemyKind kind,
+        IEnemyFactory factory)
     {
         int count = Random.Range(minCount, maxCount + 1);
 
@@ -48,23 +50,20 @@ public sealed class EnemySpawner : MonoBehaviour
                 out Vector3 position))
             {
                 Debug.LogWarning(
-                    $"Не найдено свободное место для {prefab.name}.",
+                    $"Не найдено свободное место для {kind}.",
                     this);
+
                 return;
             }
 
-            Transform parent = enemyParent != null
-                ? enemyParent
-                : transform;
-
-            EnemyTargetSensor enemy = Instantiate(
-                prefab,
+            factory.Create(
+                kind,
                 position,
-                Quaternion.Euler(0f, Random.Range(0f, 360f), 0f),
-                parent);
+                Random.Range(0f, 360f));
 
-            enemy.SetTarget(playerHealth);
             _occupiedPositions.Add(position);
+
+            Physics.SyncTransforms();
         }
     }
 

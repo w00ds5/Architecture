@@ -145,6 +145,11 @@ GameObject:
   - component: {fileID: 8417200696643966355}
   - component: {fileID: -7552497948535423767}
   - component: {fileID: 8750966612481076194}
+  - component: {fileID: 6237667683155257058}
+  - component: {fileID: 5027364977034949224}
+  - component: {fileID: 7340545422052836999}
+  - component: {fileID: -6757116520866422999}
+  - component: {fileID: 4138009513039469658}
   m_Layer: 3
   m_Name: RangedEnemy
   m_TagString: Untagged
@@ -357,6 +362,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   damage: 10
+  manaCost: 10
   projectileSpeed: 12
   cooldown: 2
   spawnHeight: 1.2
@@ -376,6 +382,73 @@ MonoBehaviour:
   minAttackDistance: 5
   maxAttackDistance: 10
   recoveryTime: 1.2
+--- !u!114 &6237667683155257058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b0b1353aec289d49ac93f0571f4f798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavMeshPathfinder
+  repathInterval: 0.2
+  cornerReachDistance: 0.15
+  sampleDistance: 1.5
+--- !u!114 &5027364977034949224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725d967251f89e04b9c00ae35756d353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRetreatPosition
+  searchInterval: 0.4
+--- !u!114 &7340545422052836999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 642b56f5d5ce7fa40ab27da01b809d3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterMana
+  maxMana: 100
+  regenerationPerSecond: 5
+--- !u!114 &-6757116520866422999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 861feabc38cf30b4487f44bf797449fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityCharacterSaveState
+--- !u!114 &4138009513039469658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5909b6dd57ca5af46832ccb4f04e1ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySaveIdentity
+  kind: 1
 --- !u!1 &1274083729514682484
 GameObject:
   m_ObjectHideFlags: 0
