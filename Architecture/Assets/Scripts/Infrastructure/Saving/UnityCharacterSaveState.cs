@@ -10,6 +10,8 @@ public sealed class UnityCharacterSaveState :
     private MeleeAttack _meleeAttack;
     private MagicAttack _magicAttack;
     private CharacterController _characterController;
+    private BossProvocation _bossProvocation;
+    private BossStrongAttack _bossStrongAttack;
 
     public bool IsAlive =>
         this != null
@@ -26,6 +28,9 @@ public sealed class UnityCharacterSaveState :
 
         _characterController =
             GetComponent<CharacterController>();
+
+        _bossProvocation = GetComponent<BossProvocation>();
+        _bossStrongAttack = GetComponent<BossStrongAttack>();
     }
 
     public CharacterSaveData Capture()
@@ -49,6 +54,13 @@ public sealed class UnityCharacterSaveState :
 
             magicCooldown = _magicAttack != null
                 ? _magicAttack.CooldownRemaining
+                : 0f,
+
+            bossProvoked = _bossProvocation != null
+                && _bossProvocation.IsProvoked,
+
+            strongAttackCooldown = _bossStrongAttack != null
+                ? _bossStrongAttack.CooldownRemaining
                 : 0f
         };
     }
@@ -70,6 +82,15 @@ public sealed class UnityCharacterSaveState :
 
         if (_magicAttack != null)
             _magicAttack.RestoreCooldown(data.magicCooldown);
+
+        if (_bossProvocation != null)
+            _bossProvocation.RestoreState(data.bossProvoked);
+
+        if (_bossStrongAttack != null)
+        {
+            _bossStrongAttack.RestoreCooldown(
+                data.strongAttackCooldown);
+        }
     }
 
     private void RestoreTransform(CharacterSaveData data)

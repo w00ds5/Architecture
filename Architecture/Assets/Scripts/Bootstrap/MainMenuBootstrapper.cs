@@ -8,6 +8,11 @@ public sealed class MainMenuBootstrapper :
     [SerializeField] private MusicSettingsView musicSettingsView;
     [SerializeField] private string gameSceneName = "Game";
 
+    [SerializeField]
+    private GameModeSettingsView gameModeSettingsView;
+
+    private GameModeSettingsController _gameModeSettingsController;
+
     private MainMenuController _controller;
     private MusicSettingsController _musicSettingsController;
 
@@ -16,10 +21,13 @@ public sealed class MainMenuBootstrapper :
         if (_controller != null)
             return;
 
-        if (menuView == null || musicSettingsView == null)
+        if (menuView == null
+            || musicSettingsView == null
+            || gameModeSettingsView == null)
         {
             Debug.LogError(
-                "Назначь Menu View и Music Settings View.",
+                "Назначь Menu View, Music Settings View "
+                + "и Game Mode Settings View.",
                 this);
 
             return;
@@ -42,6 +50,12 @@ public sealed class MainMenuBootstrapper :
             musicSettingsView,
             services.Music);
 
+        gameModeSettingsView.Initialize(services.GameMode);
+
+        _gameModeSettingsController = new GameModeSettingsController(
+            gameModeSettingsView,
+            services.GameMode);
+
         _controller = new MainMenuController(
             menuModel,
             menuView,
@@ -54,5 +68,6 @@ public sealed class MainMenuBootstrapper :
     {
         _controller?.Dispose();
         _musicSettingsController?.Dispose();
+        _gameModeSettingsController?.Dispose();
     }
 }

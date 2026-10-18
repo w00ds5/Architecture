@@ -21,6 +21,7 @@ public class MeleeAttack : MonoBehaviour
     private CharacterHealth _health;
     private float _nextAttackTime;
     private CharacterAttackState _attackState;
+    private int _pendingDamage;
 
     public float CooldownRemaining =>
         Mathf.Max(0f, _nextAttackTime - Time.time);
@@ -39,7 +40,13 @@ public class MeleeAttack : MonoBehaviour
 
     public bool TryAttack()
     {
+        return TryAttack(damage);
+    }
+
+    public bool TryAttack(int attackDamage)
+    {
         if (!isActiveAndEnabled
+            || attackDamage <= 0
             || _health.IsDead
             || Time.time < _nextAttackTime
             || !_attackState.TryBegin(DamageType.Physical))
@@ -47,7 +54,9 @@ public class MeleeAttack : MonoBehaviour
             return false;
         }
 
+        _pendingDamage = attackDamage;
         _nextAttackTime = Time.time + cooldown;
+
         AttackStarted?.Invoke();
         return true;
     }
@@ -72,7 +81,7 @@ public class MeleeAttack : MonoBehaviour
             QueryTriggerInteraction.Ignore);
 
         DamageInfo damageInfo = new DamageInfo(
-            damage,
+            _pendingDamage,
             DamageType.Physical);
 
         foreach (Collider hit in colliders)

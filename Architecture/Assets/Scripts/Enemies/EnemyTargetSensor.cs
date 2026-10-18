@@ -18,25 +18,40 @@ public class EnemyTargetSensor : MonoBehaviour
         targetHealth = target;
     }
 
-    public Transform VisibleTarget
+    public Transform KnownTarget
     {
         get
         {
             if (!isActiveAndEnabled
-                || targetHealth == null
+                || _ownHealth == null
                 || _ownHealth.IsDead
+                || targetHealth == null
                 || targetHealth.IsDead)
             {
                 return null;
             }
 
-            Vector3 toTarget =
-                targetHealth.transform.position - transform.position;
+            return targetHealth.transform;
+        }
+    }
 
-            toTarget.y = 0f;
+    public Transform VisibleTarget
+    {
+        get
+        {
+            Transform target = KnownTarget;
 
-            return toTarget.sqrMagnitude <= detectionRange * detectionRange
-                ? targetHealth.transform
+            if (target == null)
+                return null;
+
+            Vector3 direction =
+                target.position - transform.position;
+
+            direction.y = 0f;
+
+            return direction.sqrMagnitude
+                <= detectionRange * detectionRange
+                ? target
                 : null;
         }
     }

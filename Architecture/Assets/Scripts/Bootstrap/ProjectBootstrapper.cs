@@ -44,12 +44,14 @@ public sealed class ProjectBootstrapper : MonoBehaviour
             new GameSaveInteractor(repository, validator);
 
         IGameStartState gameStart = new GameStartState();
+        IGameMode gameMode = new GameMode();
 
         _services = new ProjectServices(
             sceneLoader,
             music,
             saves,
-            gameStart);
+            gameStart,
+            gameMode);
 
         SceneManager.sceneLoaded += InitializeScene;
     }

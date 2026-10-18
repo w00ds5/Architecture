@@ -4,7 +4,9 @@ using UnityEngine;
     typeof(EnemyTargetSensor),
     typeof(MagicAttack),
     typeof(CharacterAttackState))]
-public sealed class EnemyRangedAttackController : MonoBehaviour
+public sealed class EnemyRangedAttackController :
+    MonoBehaviour,
+    IEnemyAttackBehaviour
 {
     [SerializeField, Min(0.1f)] private float minAttackDistance = 5f;
     [SerializeField, Min(0.1f)] private float maxAttackDistance = 10f;
@@ -14,6 +16,8 @@ public sealed class EnemyRangedAttackController : MonoBehaviour
     private MagicAttack _magicAttack;
     private CharacterAttackState _attackState;
     private float _nextAttackTime;
+
+    public bool AutomaticControl { get; set; } = true;
 
     private void Awake()
     {
@@ -35,23 +39,38 @@ public sealed class EnemyRangedAttackController : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time < _nextAttackTime)
-            return;
+        if (AutomaticControl)
+            TickAttack(_sensor.VisibleTarget);
+    }
 
-        Transform target = _sensor.VisibleTarget;
+    public bool IsInRange(Transform target)
+    {
         if (target == null)
-            return;
+            return false;
 
         Vector3 direction = target.position - transform.position;
         direction.y = 0f;
 
         float distanceSquared = direction.sqrMagnitude;
 
-        if (distanceSquared < minAttackDistance * minAttackDistance
-            || distanceSquared > maxAttackDistance * maxAttackDistance)
+        return distanceSquared
+                >= minAttackDistance * minAttackDistance
+            && distanceSquared
+                <= maxAttackDistance * maxAttackDistance;
+    }
+
+    public void TickAttack(Transform target)
+    {
+        if (!isActiveAndEnabled
+            || Time.deltaTime <= 0f
+            || Time.time < _nextAttackTime
+            || !IsInRange(target))
         {
             return;
         }
+
+        Vector3 direction = target.position - transform.position;
+        direction.y = 0f;
 
         if (Vector3.Angle(transform.forward, direction) > 10f)
             return;

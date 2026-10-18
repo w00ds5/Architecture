@@ -4,7 +4,9 @@ using UnityEngine;
     typeof(EnemyTargetSensor),
     typeof(MeleeAttack),
     typeof(CharacterAttackState))]
-public sealed class EnemyAttackController : MonoBehaviour
+public sealed class EnemyAttackController :
+    MonoBehaviour,
+    IEnemyAttackBehaviour
 {
     [SerializeField, Min(0f)] private float attackRange = 1.6f;
     [SerializeField, Min(0f)] private float recoveryTime = 1.2f;
@@ -13,6 +15,8 @@ public sealed class EnemyAttackController : MonoBehaviour
     private MeleeAttack _meleeAttack;
     private CharacterAttackState _attackState;
     private float _nextAttackTime;
+
+    public bool AutomaticControl { get; set; } = true;
 
     private void Awake()
     {
@@ -34,18 +38,32 @@ public sealed class EnemyAttackController : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time < _nextAttackTime)
-            return;
+        if (AutomaticControl)
+            TickAttack(_sensor.VisibleTarget);
+    }
 
-        Transform target = _sensor.VisibleTarget;
+    public bool IsInRange(Transform target)
+    {
         if (target == null)
-            return;
+            return false;
 
         Vector3 direction = target.position - transform.position;
         direction.y = 0f;
 
-        if (direction.sqrMagnitude <= attackRange * attackRange)
-            _meleeAttack.TryAttack();
+        return direction.sqrMagnitude <= attackRange * attackRange;
+    }
+
+    public void TickAttack(Transform target)
+    {
+        if (!isActiveAndEnabled
+            || Time.deltaTime <= 0f
+            || Time.time < _nextAttackTime
+            || !IsInRange(target))
+        {
+            return;
+        }
+
+        _meleeAttack.TryAttack();
     }
 
     private void BeginRecovery(DamageType type)

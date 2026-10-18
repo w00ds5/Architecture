@@ -14,7 +14,16 @@ public sealed class GameSceneBootstrapper :
     [SerializeField] private EnemySaveIdentity meleePrefab;
     [SerializeField] private EnemySaveIdentity rangedPrefab;
     [SerializeField] private Transform enemyParent;
+    [SerializeField] private EnemySaveIdentity bossPrefab;
+    [SerializeField] private Transform bossSpawnPoint;
+    [SerializeField] private GameOverView gameEndView;
 
+    [SerializeField, Min(0f)]
+    private float victoryDelay = 4.7f;
+
+
+    private EnemyDefeatTracker _enemyDefeatTracker;
+    private GameVictoryController _victoryController;
     private PauseMenuController _pauseController;
     private IEnemyFactory _enemyFactory;
     private IGameStateSource _gameStateSource;
@@ -32,7 +41,10 @@ public sealed class GameSceneBootstrapper :
             || enemySpawner == null
             || meleePrefab == null
             || rangedPrefab == null
-            || enemyParent == null)
+            || enemyParent == null
+            || bossPrefab == null
+            || gameEndView == null
+            || bossSpawnPoint == null)
         {
             Debug.LogError(
                 "Назначь игрока, меню паузы, управление, "
@@ -61,8 +73,10 @@ public sealed class GameSceneBootstrapper :
         _enemyFactory = new UnityEnemyFactory(
             meleePrefab,
             rangedPrefab,
+            bossPrefab,
             playerHealth,
-            enemyParent);
+            enemyParent,
+            services.GameMode);
 
         _gameStateSource = new UnityGameStateSource(
             playerState,
@@ -78,15 +92,26 @@ public sealed class GameSceneBootstrapper :
         }
         else
         {
+            _enemyFactory.Create(
+                EnemyKind.Boss,
+                bossSpawnPoint.position,
+                bossSpawnPoint.eulerAngles.y);
+
             enemySpawner.SpawnRandom(_enemyFactory);
         }
+
+        _enemyDefeatTracker = new EnemyDefeatTracker(
+        enemyParent.GetComponentsInChildren<CharacterHealth>());
 
         PauseMenuInput input = GetComponent<PauseMenuInput>();
 
         IGameplayPauseService pauseService =
             new UnityGameplayPauseService(
                 gameplayBehaviours,
-                () => playerHealth != null && !playerHealth.IsDead);
+                () => playerHealth != null
+                    && !playerHealth.IsDead
+                    && (_victoryController == null
+                        || !_victoryController.HasWon));
 
         PauseMenuModel model = new PauseMenuModel();
         pauseView.Initialize(model);
@@ -108,16 +133,26 @@ public sealed class GameSceneBootstrapper :
         services.SceneLoader,
         gameObject.scene.name,
         error => Debug.LogException(error, this));
+
+        _victoryController = new GameVictoryController(
+        _enemyDefeatTracker,
+        playerHealth,
+        gameEndView,
+        model,
+        gameplayBehaviours,
+        victoryDelay);
     }
 
     private void Update()
     {
         _pauseController?.Tick();
+        _victoryController?.Tick(Time.deltaTime);
     }
 
     private void OnDestroy()
     {
         _saveLoadController?.Dispose();
         _pauseController?.Dispose();
+        _enemyDefeatTracker?.Dispose();
     }
 }

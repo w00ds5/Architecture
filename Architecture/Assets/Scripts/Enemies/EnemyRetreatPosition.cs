@@ -21,6 +21,12 @@ public sealed class EnemyRetreatPosition : MonoBehaviour
         _pathfinder = GetComponent<NavMeshPathfinder>();
     }
 
+    public void ResetSearch()
+        {
+            _nextSearchTime = 0f;
+            _hasPosition = false;
+        }
+
     public bool TryGetPosition(
         Vector3 targetPosition,
         float minDistance,

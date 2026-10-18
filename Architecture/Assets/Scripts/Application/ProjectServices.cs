@@ -6,12 +6,14 @@ public sealed class ProjectServices
     public IMusicService Music { get; }
     public IGameSaveInteractor Saves { get; }
     public IGameStartState GameStart { get; }
+    public IGameMode GameMode { get; }
 
     public ProjectServices(
         ISceneLoader sceneLoader,
         IMusicService music,
         IGameSaveInteractor saves,
-        IGameStartState gameStart)
+        IGameStartState gameStart,
+        IGameMode gameMode)
     {
         SceneLoader = sceneLoader
             ?? throw new ArgumentNullException(nameof(sceneLoader));
@@ -24,5 +26,8 @@ public sealed class ProjectServices
 
         GameStart = gameStart
             ?? throw new ArgumentNullException(nameof(gameStart));
+
+        GameMode = gameMode
+            ?? throw new ArgumentNullException(nameof(gameMode));
     }
 }

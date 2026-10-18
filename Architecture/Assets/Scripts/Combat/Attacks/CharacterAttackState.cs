@@ -16,6 +16,8 @@ public sealed class CharacterAttackState : MonoBehaviour
     private bool _committed;
     private DamageType _attackType;
 
+    public bool IsAttacking => _active;
+
     private void Awake()
     {
         _health = GetComponent<CharacterHealth>();

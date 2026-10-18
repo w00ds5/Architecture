@@ -14,4 +14,7 @@ public sealed class CharacterSaveData
 
     public float meleeCooldown;
     public float magicCooldown;
+
+    public bool bossProvoked;
+    public float strongAttackCooldown;
 }

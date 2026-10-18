@@ -5,20 +5,28 @@ public sealed class UnityEnemyFactory : IEnemyFactory
 {
     private readonly EnemySaveIdentity _meleePrefab;
     private readonly EnemySaveIdentity _rangedPrefab;
+    private readonly EnemySaveIdentity _bossPrefab;
+
     private readonly CharacterHealth _playerHealth;
     private readonly Transform _enemyParent;
+    private readonly IGameMode _gameMode;
 
     public UnityEnemyFactory(
         EnemySaveIdentity meleePrefab,
         EnemySaveIdentity rangedPrefab,
+        EnemySaveIdentity bossPrefab,
         CharacterHealth playerHealth,
-        Transform enemyParent)
+        Transform enemyParent,
+        IGameMode gameMode)
     {
         if (meleePrefab == null)
             throw new ArgumentNullException(nameof(meleePrefab));
 
         if (rangedPrefab == null)
             throw new ArgumentNullException(nameof(rangedPrefab));
+
+        if (bossPrefab == null)
+            throw new ArgumentNullException(nameof(bossPrefab));
 
         if (playerHealth == null)
             throw new ArgumentNullException(nameof(playerHealth));
@@ -27,7 +35,8 @@ public sealed class UnityEnemyFactory : IEnemyFactory
             throw new ArgumentNullException(nameof(enemyParent));
 
         if (meleePrefab.Kind != EnemyKind.Melee
-            || rangedPrefab.Kind != EnemyKind.Ranged)
+            || rangedPrefab.Kind != EnemyKind.Ranged
+            || bossPrefab.Kind != EnemyKind.Boss)
         {
             throw new ArgumentException(
                 "Проверь Kind на префабах противников.");
@@ -35,8 +44,12 @@ public sealed class UnityEnemyFactory : IEnemyFactory
 
         _meleePrefab = meleePrefab;
         _rangedPrefab = rangedPrefab;
+        _bossPrefab = bossPrefab;
         _playerHealth = playerHealth;
         _enemyParent = enemyParent;
+
+        _gameMode = gameMode
+            ?? throw new ArgumentNullException(nameof(gameMode));
     }
 
     public ICharacterSaveState Create(
@@ -55,6 +68,31 @@ public sealed class UnityEnemyFactory : IEnemyFactory
         enemy.GetComponent<EnemyTargetSensor>()
             .SetTarget(_playerHealth);
 
+        if (kind == EnemyKind.Boss)
+        {
+            BossBrain brain = enemy.GetComponent<BossBrain>();
+
+            if (brain == null)
+            {
+                throw new InvalidOperationException(
+                    "Добавь BossBrain на корень префаба босса.");
+            }
+
+            brain.Initialize(_gameMode);
+        }
+        else
+        {
+            EnemyBrain brain = enemy.GetComponent<EnemyBrain>();
+
+            if (brain == null)
+            {
+                throw new InvalidOperationException(
+                    "Добавь EnemyBrain на корень префаба моба.");
+            }
+
+            brain.Initialize(_gameMode);
+        }
+
         return enemy.State;
     }
 
@@ -67,6 +105,9 @@ public sealed class UnityEnemyFactory : IEnemyFactory
 
             case EnemyKind.Ranged:
                 return _rangedPrefab;
+
+            case EnemyKind.Boss:
+                return _bossPrefab;
 
             default:
                 throw new ArgumentOutOfRangeException(

@@ -45,9 +45,11 @@ public sealed class GameSaveDataValidator
             || !IsFinite(state.mana)
             || !IsFinite(state.meleeCooldown)
             || !IsFinite(state.magicCooldown)
+            || !IsFinite(state.strongAttackCooldown)
             || state.mana < 0f
             || state.meleeCooldown < 0f
-            || state.magicCooldown < 0f)
+            || state.magicCooldown < 0f
+            || state.strongAttackCooldown < 0f)
         {
             throw new InvalidOperationException(
                 "Некорректное состояние персонажа.");

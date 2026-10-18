@@ -4,7 +4,9 @@ using UnityEngine;
     typeof(EnemyTargetSensor),
     typeof(CharacterMovement),
     typeof(NavMeshPathfinder))]
-public class EnemyChaseController : MonoBehaviour
+public class EnemyChaseController :
+    MonoBehaviour,
+    IEnemyMovementBehaviour
 {
     [SerializeField, Min(0f)]
     private float stopDistance = 1.6f;
@@ -12,6 +14,8 @@ public class EnemyChaseController : MonoBehaviour
     private EnemyTargetSensor _sensor;
     private CharacterMovement _movement;
     private NavMeshPathfinder _pathfinder;
+
+    public bool AutomaticControl { get; set; } = true;
 
     private void Awake()
     {
@@ -22,12 +26,18 @@ public class EnemyChaseController : MonoBehaviour
 
     private void Update()
     {
-        Transform target = _sensor.VisibleTarget;
+        if (AutomaticControl)
+            TickMovement(_sensor.VisibleTarget);
+    }
+
+    public void TickMovement(Transform target)
+    {
+        if (!isActiveAndEnabled || Time.deltaTime <= 0f)
+            return;
 
         if (target == null)
         {
-            _pathfinder.ClearPath();
-            _movement.Move(Vector3.zero, false);
+            Stop();
             return;
         }
 
@@ -46,9 +56,14 @@ public class EnemyChaseController : MonoBehaviour
         }
         else
         {
-            _pathfinder.ClearPath();
-            _movement.Move(Vector3.zero, false);
+            Stop();
             _movement.Face(toTarget);
         }
+    }
+
+    public void Stop()
+    {
+        _pathfinder.ClearPath();
+        _movement.Move(Vector3.zero, false);
     }
 }

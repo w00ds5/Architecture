@@ -148,6 +148,9 @@ GameObject:
   - component: {fileID: 6237667683155257058}
   - component: {fileID: -3004412292584729878}
   - component: {fileID: -6623366942782440058}
+  - component: {fileID: 8811188067747679903}
+  - component: {fileID: 5027364977034949224}
+  - component: {fileID: -2040910405928492175}
   m_Layer: 3
   m_Name: MeleeEnemy
   m_TagString: Untagged
@@ -415,6 +418,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySaveIdentity
   kind: 0
+--- !u!114 &8811188067747679903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432bddb36d1d04a4fab4f0f6f58d2cd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFleeMovement
+  safeDistance: 18
+  searchMargin: 4
+--- !u!114 &5027364977034949224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 725d967251f89e04b9c00ae35756d353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRetreatPosition
+  searchInterval: 0.4
+--- !u!114 &-2040910405928492175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51176675489a81840b370786cbe6316f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyBrain
+  fleeHealthThreshold: 0.3
+  currentState: 0
 --- !u!1 &1274083729514682484
 GameObject:
   m_ObjectHideFlags: 0

@@ -150,6 +150,8 @@ GameObject:
   - component: {fileID: 7340545422052836999}
   - component: {fileID: -6757116520866422999}
   - component: {fileID: 4138009513039469658}
+  - component: {fileID: 3650953738438370245}
+  - component: {fileID: -5501216117189222255}
   m_Layer: 3
   m_Name: RangedEnemy
   m_TagString: Untagged
@@ -449,6 +451,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySaveIdentity
   kind: 1
+--- !u!114 &3650953738438370245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432bddb36d1d04a4fab4f0f6f58d2cd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyFleeMovement
+  safeDistance: 18
+  searchMargin: 4
+--- !u!114 &-5501216117189222255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064626519515903336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51176675489a81840b370786cbe6316f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyBrain
+  fleeHealthThreshold: 0.3
+  currentState: 0
 --- !u!1 &1274083729514682484
 GameObject:
   m_ObjectHideFlags: 0
